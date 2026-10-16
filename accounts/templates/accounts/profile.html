@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>마이페이지 - 내 프로필</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f8f9fa; }
+        .container { width: 380px; padding: 30px; background: white; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h2 { text-align: center; margin-bottom: 20px; color: #333; }
+        .info-box { margin-bottom: 20px; padding: 15px; background: #f1f3f5; border-radius: 6px; font-size: 15px; }
+        .info-box p { margin: 8px 0; }
+        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+        .btn { width: 100%; padding: 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 15px; text-align: center; text-decoration: none; box-sizing: border-box; }
+        .btn-primary { background-color: #007bff; color: white; }
+        .btn-primary:hover { background-color: #0056b3; }
+        .btn-secondary { background-color: #6c757d; color: white; }
+        .btn-secondary:hover { background-color: #5a6268; }
+        .back-link { text-align: center; margin-top: 15px; font-size: 14px; }
+        .back-link a { color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>내 프로필</h2>
+        <div class="info-box">
+            <p><strong>아이디:</strong> {{ user.username }}</p>
+            <p><strong>이메일:</strong> {{ user.email|default:"등록된 이메일이 없습니다." }}</p>
+            <p><strong>가입일시:</strong> {{ user.date_joined|date:"Y년 m월 d일 H:i" }}</p>
+            <p><strong>학번/사번:</strong> {{ user.profile.student_id|default:"미등록" }}</p>
+            <p><strong>전공/학과:</strong> {{ user.profile.major|default:"미등록" }}</p>
+            <p><strong>전화번호:</strong> {{ user.profile.phone|default:"미등록" }}</p>
+            <p><strong>주소:</strong> {{ user.profile.address|default:"미등록" }}</p>
+            <p><strong>자기소개:</strong> {{ user.profile.bio|default:"등록된 자기소개가 없습니다." }}</p>
+            <hr style="border: 0; border-top: 1px solid #dee2e6; margin: 12px 0;">
+            <p style="font-size: 13px; color: #666;"><strong>가입일시:</strong> {{ user.date_joined|date:"Y년 m월 d일 H:i" }}</p>
+        </div>
+
+        <div class="btn-group">
+            <a href="{% url 'accounts:profile_update' %}" class="btn btn-secondary">회원정보 수정</a>
+            <a href="{% url 'accounts:password_change' %}" class="btn btn-primary">비밀번호 변경</a>
+            <!-- 추후 만들 회원정보 수정 페이지 링크 (예정) -->
+            <!-- <a href="#" class="btn btn-secondary">회원정보 수정</a> -->
+        </div>
+
+        <div class="back-link">
+            <a href="{% url 'board:post_list' %}">메인으로 돌아가기</a>
+        </div>
+    </div>
+</body>
+</html>

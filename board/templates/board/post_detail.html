@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ post.title }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .post-container { max-width: 800px; margin: 0 auto; border: 1px solid #ddd; padding: 30px; border-radius: 8px; }
+        .post-header { border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 20px; }
+        .post-info { font-size: 14px; color: #666; margin-top: 5px; }
+        .post-content { min-height: 200px; line-height: 1.6; white-space: pre-wrap; margin-bottom: 30px; }
+        .attachment-box { background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin-bottom: 20px; }
+        .btn-group { margin-top: 20px; }
+        .btn { padding: 8px 15px; text-decoration: none; border-radius: 4px; font-size: 14px; display: inline-block; }
+        .btn-secondary { background-color: #6c757d; color: white; }
+    </style>
+</head>
+<body>
+    <!-- 기존 버튼 영역을 아래 코드로 대체 -->
+<div class="btn-group" style="display: flex; justify-content: space-between; align-items: center;">
+    <a href="{% url 'board:post_list' %}" class="btn btn-secondary">목록으로</a>
+    
+    {% if request.user == post.author %}
+        <div>
+            <a href="{% url 'board:post_update' post.pk %}" class="btn" style="background-color: #ffc107; color: black; margin-right: 5px;">수정</a>
+            <a href="{% url 'board:post_delete' post.pk %}" class="btn" style="background-color: #dc3545; color: white;">삭제</a>
+        </div>
+    {% endif %}
+</div>
+    
+    
+    
+    
+    
+    
+    <div class="post-container">
+        <div class="post-header">
+            <span style="background-color: #007bff; color: white; padding: 3px 8px; border-radius: 4px; font-size: 12px;">
+                {{ post.category.name }}
+            </span>
+            <h2>{{ post.title }}</h2>
+            <div class="post-info">
+                작성자: <strong>{{ post.author.username }}</strong> | 
+                작성일시: {{ post.created_at|date:"Y-m-d H:i" }} | 
+                조회수: {{ post.views }}
+            </div>
+        </div>
+
+        <!-- 첨부 이미지 및 파일 영역 -->
+        {% if post.image %}
+            <div class="attachment-box">
+                <p><strong>첨부 이미지:</strong></p>
+                <img src="{{ post.image.url }}" alt="이미지" style="max-width: 100%; height: auto; border-radius: 4px;">
+            </div>
+        {% endif %}
+
+        {% if post.file %}
+            <div class="attachment-box">
+                <p><strong>첨부 파일:</strong> <a href="{{ post.file.url }}" download>{{ post.file.name }}</a></p>
+            </div>
+        {% endif %}
+
+        <!-- 본문 내용 -->
+        <div class="post-content">
+            {{ post.content }}
+        </div>
+
+        <!-- 버튼 영역 -->
+        <div class="btn-group">
+            <a href="{% url 'board:post_list' %}" class="btn btn-secondary">목록으로</a>
+        </div>
+    </div>
+</body>
+</html>

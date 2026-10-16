@@ -1,0 +1,79 @@
+{% extends 'board/base.html' %}
+
+{% block title %}게시판 - 포트폴리오{% endblock %}
+
+{% block content %}
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>게시판</h2>
+    
+    <!-- 검색창 영역 -->
+    <form method="get" action="" style="display: flex; gap: 8px;">
+        <input type="text" name="kw" value="{{ kw|default:'' }}" placeholder="검색어를 입력하세요" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 14px; width: 220px;">
+        <button type="submit" class="btn btn-secondary" style="padding: 8px 14px;">검색</button>
+    </form>
+</div>
+
+<!-- 게시글 목록 테이블 -->
+<table>
+    <thead>
+        <tr>
+            <th style="width: 10%;">번호</th>
+            <th style="width: 15%;">카테고리</th>
+            <th style="width: 45%;">제목</th>
+            <th style="width: 15%;">작성자</th>
+            <th style="width: 15%;">작성일시</th>
+            <th style="width: 7%">조회수</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if post_list %}
+            {% for post in post_list %}
+            <tr>
+                <td style="text-align: center;">{{ forloop.counter0|add:post_list.start_index }}</td>
+                <td style="text-align: center;">
+                    <span style="background-color: #e0e7ff; color: #3730a3; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">{{ post.category.name }}</span>
+                </td>
+                <td style="text-align: left; padding-left: 20px;">
+                    {% if post.is_secret %}
+                        🔒 [비밀글] 
+                    {% endif %}
+                    <a href="{% url 'board:post_detail' post.id %}" style="text-decoration: none; color: var(--text-main); font-weight: 500;">
+                        {{ post.title }}
+                    </a>
+                </td>
+                <td style="text-align: center;">{{ post.author.username }}</td>
+                <td style="text-align: center; color: var(--text-muted); font-size: 13px;">{{ post.created_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">등록된 게시글이 없습니다.</td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>
+
+<!-- 페이지네이션 영역 (기존 로직 유지) -->
+<div style="margin-top: 30px; text-align: center; display: flex; justify-content: center; gap: 6px; align-items: center;">
+    <!-- 이전 페이지 -->
+    {% if post_list.has_previous %}
+        <a href="?page={{ post_list.previous_page_number }}&kw={{ kw }}" class="btn btn-secondary" style="padding: 4px 10px; font-size: 13px; text-decoration: none;">이전</a>
+    {% endif %}
+
+    <!-- 페이지 번호 -->
+    {% for page_number in post_list.paginator.page_range %}
+        {% if page_number >= post_list.number|add:-5 and page_number <= post_list.number|add:5 %}
+            {% if page_number == post_list.number %}
+                <span style="padding: 6px 12px; background-color: var(--primary); color: white; border-radius: 4px; font-weight: bold; font-size: 14px;">{{ page_number }}</span>
+            {% else %}
+                <a href="?page={{ page_number }}&kw={{ kw }}" style="padding: 6px 12px; text-decoration: none; color: var(--text-main); border: 1px solid var(--border-color); border-radius: 4px; font-size: 14px;">{{ page_number }}</a>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+    <!-- 다음 페이지 -->
+    {% if post_list.has_next %}
+        <a href="?page={{ post_list.next_page_number }}&kw={{ kw }}" class="btn btn-secondary" style="padding: 4px 10px; font-size: 13px; text-decoration: none;">다음</a>
+    {% endif %}
+</div>
+{% endblock %}

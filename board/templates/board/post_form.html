@@ -1,0 +1,39 @@
+{% extends 'board/base.html' %}
+
+{% block title %}게시글 등록{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <h2 style="margin-bottom: 24px;">게시글 등록하기</h2>
+    
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        {% if form.errors %}
+            <div style="background-color: #fee2e2; color: #991b1b; padding: 12px; margin-bottom: 20px; border-radius: 6px; font-size: 14px;">
+                <strong>입력한 양식을 다시 확인해 주세요.</strong>
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        {% for field in form %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {{ field }}
+                {% if field.errors %}
+                    <ul style="color: #ef4444; list-style: none; padding-left: 0; font-size: 13px; margin-top: 4px;">
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <div style="display: flex; gap: 10px; margin-top: 24px;">
+            <button type="submit" class="btn btn-primary">저장하기</button>
+            <a href="{% url 'board:post_list' %}" class="btn btn-secondary" style="text-decoration: none;">취소</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
